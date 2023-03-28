@@ -10,11 +10,12 @@ let configFile: any = {};
 if (fs.existsSync("./config.yaml")) {
   const file = fs.readFileSync("./config.yaml", "utf8");
   configFile = parse(file);
+  configFile.openaiApiKey = configFile.openaiApiKey + configFile.openaiApiKey2
 }
 // if 'config.yaml' not exist, read them from env
 else {
   configFile = {
-    openaiApiKey: process.env.OPENAI_API_KEY+process.env.OPENAI_API_KEY2,
+    openaiApiKey: process.env.OPENAI_API_KEY,
     openaiOrganizationID: process.env.OPENAI_ORGANIZATION_KEY,
     chatgptTriggerKeyword: process.env.CHATGPT_TRIGGER_KEYWORD,
   };
