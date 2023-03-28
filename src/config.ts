@@ -15,9 +15,9 @@ if (fs.existsSync("./config.yaml")) {
 // if 'config.yaml' not exist, read them from env
 else {
   configFile = {
-    openaiApiKey: process.env.OPENAI_API_KEY,
-    openaiOrganizationID: process.env.OPENAI_ORGANIZATION_KEY,
-    chatgptTriggerKeyword: process.env.CHATGPT_TRIGGER_KEYWORD,
+    openaiApiKey: "1",
+    openaiOrganizationID: "org-TsxYBQWs4JydJaXjfi6aUKdX",
+    chatgptTriggerKeyword: "ll",
   };
 }
 
