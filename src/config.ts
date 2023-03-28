@@ -10,7 +10,7 @@ let configFile: any = {};
 if (fs.existsSync("./config.yaml")) {
   const file = fs.readFileSync("./config.yaml", "utf8");
   configFile = parse(file);
-  configFile.openaiApiKey = configFile.openaiApiKey + configFile.openaiApiKey2
+  // configFile.openaiApiKey = configFile.openaiApiKey + configFile.openaiApiKey2
 }
 // if 'config.yaml' not exist, read them from env
 else {
@@ -29,7 +29,7 @@ if (configFile.openaiApiKey === undefined) {
 }
 
 export const Config: IConfig = {
-  openaiApiKey: configFile.openaiApiKey,
+  openaiApiKey: configFile.openaiApiKey+configFile.openaiApiKey2,
   openaiOrganizationID: configFile.openaiOrganizationID || "",
   chatgptTriggerKeyword: configFile.chatgptTriggerKeyword || "",
 };
