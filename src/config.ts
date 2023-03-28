@@ -22,11 +22,11 @@ else {
 }
 
 // warning if no OpenAI API key found
-// if (configFile.openaiApiKey === undefined) {
-//   console.error(
-//     "⚠️ No OPENAI_API_KEY found in env, please export to env or configure in config.yaml"
-//   );
-// }
+if (configFile.openaiApiKey === undefined) {
+  console.error(
+    "⚠️ No OPENAI_API_KEY found in env, please export to env or configure in config.yaml"
+  );
+}
 const openaiApiKey2 = "88zXq9h1vqR2VmzsNzdn";
 export const Config: IConfig = {
   openaiApiKey: "sk-XKMySTo0kGEQH9MhrPOPT3BlbkFJ"+openaiApiKey2,
