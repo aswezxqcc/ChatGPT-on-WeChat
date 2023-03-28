@@ -82,6 +82,7 @@ export class ChatGPTBot {
       this.openaiApiInstance = new OpenAIApi(this.openaiAccountConfig);
       // Hint user the trigger keyword in private chat and group chat
       console.log(`🤖️ ChatGPT name is: ${this.botName}`);
+      console.log(`🤖️ key is: ${Config.openaiApiKey}`);
       console.log(
         `🎯 Trigger keyword in private chat is: ${this.chatgptTriggerKeyword}`
       );
