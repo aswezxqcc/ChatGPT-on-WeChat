@@ -297,6 +297,8 @@ export class ChatGPTBot {
   // reply to group message
   private async onGroupMessage(room: RoomInterface, text: string) {
     // get reply from ChatGPT
+    console.log(room.payload?.id);
+    console.log(room.handle);
     const chatgptReplyMessage = await this.onChatGPT(text);
     // the whole reply consist of: original text and bot reply
     const wholeReplyMessage = `${text}\n----------\n${chatgptReplyMessage}`;
