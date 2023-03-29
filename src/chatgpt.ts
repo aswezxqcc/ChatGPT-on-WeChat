@@ -165,17 +165,30 @@ export class ChatGPTBot {
 
   // create messages for ChatGPT API request
   // TODO: store history chats for supporting context chat
-  private createMessages(text: string): Array<Object> {
+  private createMessages(text: string, name?: string): Array<Object> {
     const messages = [
       {
         role: "system",
         content: this.chatgptSystemContent,
-      },
+      }
+    ];
+    if (name) {
+      let cache = this.getGPTCache(name);
+      if (cache.length) {
+        cache.forEach(data => {
+          messages.push({
+            role: "assistant",
+            content: data
+          })
+        })
+      }
+    }
+
+    messages.push(
       {
         role: "user",
         content: text,
-      }
-    ];
+      })
     console.log('lastresult: ' + this.lastresult);
     // if(this.lastresult){
     //   messages.push({
@@ -185,10 +198,20 @@ export class ChatGPTBot {
     // }
     return messages;
   }
-
+  GPTCache: Map<string, Array<string>> = new Map();
+  setGPTCache(name: string, content: string) {
+    let cache = this.GPTCache.get(name) || [];
+    if (name && content) {
+      cache.push(content);
+      this.GPTCache.set(name, cache);
+    }
+  }
+  getGPTCache(name: string) {
+    return this.GPTCache.get(name) || []
+  }
   // send question to ChatGPT with OpenAI API and get answer
-  private async onChatGPT(text: string): Promise<string> {
-    const inputMessages = this.createMessages(text);
+  private async onChatGPT(text: string, name?: string): Promise<string> {
+    const inputMessages = this.createMessages(text, name);
     try {
       // config OpenAI API request body
       const response = await this.openaiApiInstance.createChatCompletion({
@@ -199,6 +222,9 @@ export class ChatGPTBot {
       // this.lastresult = response?.data?.choices[0]?.message?.content;
       try {
         console.log("new result: " + JSON.stringify(response?.data));
+        if (name) {
+          this.setGPTCache(name, response?.data?.choices[0]?.message?.content);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -244,7 +270,7 @@ export class ChatGPTBot {
   private async onPrivateMessage(talker: ContactInterface, text: string) {
     console.log("name: " + talker.name());
     // get reply from ChatGPT
-    const chatgptReplyMessage = await this.onChatGPT(text);
+    const chatgptReplyMessage = await this.onChatGPT(text, talker.name());
     // send the ChatGPT reply to chat
     await this.reply(talker, chatgptReplyMessage);
   }
