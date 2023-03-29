@@ -44,7 +44,7 @@ export class ChatGPTBot {
     model: "gpt-3.5-turbo",
     // add your ChatGPT model parameters below
     temperature: 0.8,
-    // max_tokens: 2000,
+    max_tokens: 10,
   };
 
   // ChatGPT system content configuration (guided by OpenAI official document)
@@ -53,7 +53,7 @@ export class ChatGPTBot {
 
   // message size for a single reply by the bot
   SINGLE_MESSAGE_MAX_SIZE: number = 500;
-
+  lastresult?:string;
   // OpenAI API
   private openaiAccountConfig: any; // OpenAI API key (required) and organization key (optional)
   private openaiApiInstance: any; // OpenAI API instance
@@ -186,9 +186,11 @@ export class ChatGPTBot {
       // config OpenAI API request body
       const response = await this.openaiApiInstance.createChatCompletion({
         ...this.chatgptModelConfig,
+        content:this.lastresult,
         messages: inputMessages,
       });
       // use OpenAI API to get ChatGPT reply message
+      this.lastresult = response?.data?.choices[0]?.message?.content;
       const chatgptReplyMessage =
         response?.data?.choices[0]?.message?.content?.trim();
       console.log(`🤖️ ChatGPT says: ${chatgptReplyMessage}`);
@@ -217,6 +219,7 @@ export class ChatGPTBot {
   ): Promise<void> {
     const messages: Array<string> = [];
     let message = mesasge;
+    console.log(message);
     while (message.length > this.SINGLE_MESSAGE_MAX_SIZE) {
       messages.push(message.slice(0, this.SINGLE_MESSAGE_MAX_SIZE));
       message = message.slice(this.SINGLE_MESSAGE_MAX_SIZE);
@@ -229,6 +232,7 @@ export class ChatGPTBot {
 
   // reply to private message
   private async onPrivateMessage(talker: ContactInterface, text: string) {
+    console.log("name: "+talker.name());
     // get reply from ChatGPT
     const chatgptReplyMessage = await this.onChatGPT(text);
     // send the ChatGPT reply to chat
