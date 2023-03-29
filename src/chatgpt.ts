@@ -167,10 +167,10 @@ export class ChatGPTBot {
   // TODO: store history chats for supporting context chat
   private createMessages(text: string, name?: string): Array<Object> {
     const messages = [
-      {
-        role: "system",
-        content: this.chatgptSystemContent,
-      }
+      // {
+      //   role: "system",
+      //   content: this.chatgptSystemContent,
+      // }
     ];
     console.log("createMessages:"+name)
     if (name) {
