@@ -295,10 +295,10 @@ export class ChatGPTBot {
   }
 
   // reply to group message
-  private async onGroupMessage(room: RoomInterface, text: string) {
+  private async onGroupMessage(room: RoomInterface, text: string,talker: ContactInterface) {
     // get reply from ChatGPT
     console.log(room.payload?.id);
-    console.log(room.handle);
+    console.log(talker.name);
     const chatgptReplyMessage = await this.onChatGPT(text);
     // the whole reply consist of: original text and bot reply
     const wholeReplyMessage = `${text}\n----------\n${chatgptReplyMessage}`;
@@ -327,7 +327,7 @@ export class ChatGPTBot {
     if (isPrivateChat) {
       return await this.onPrivateMessage(talker, text);
     } else {
-      return await this.onGroupMessage(room, text);
+      return await this.onGroupMessage(room, text,talker);
     }
   }
 
