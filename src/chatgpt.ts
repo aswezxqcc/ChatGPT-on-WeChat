@@ -2,7 +2,8 @@ import { Config } from "./config.js";
 import { Message } from "wechaty";
 import { ContactInterface, RoomInterface } from "wechaty/impls";
 import { Configuration, OpenAIApi } from "openai";
-
+const MAX_MESSAGE_COUT = 50; //连续对话
+const UNLIMIT_USER = ["CC"]
 enum MessageType {
   Unknown = 0,
   Attachment = 1, // Attach(6),
@@ -172,10 +173,10 @@ export class ChatGPTBot {
       //   content: this.chatgptSystemContent,
       // }
     ];
-    console.log("createMessages:"+name)
+    //console.log("createMessages:" + name)
     if (name) {
       let cache = this.getGPTCache(name);
-      console.log(JSON.stringify(cache));
+      //console.log(JSON.stringify(cache));
       if (cache.length) {
         cache.forEach(data => {
           messages.push({
@@ -191,7 +192,7 @@ export class ChatGPTBot {
         role: "user",
         content: text,
       })
-    console.log('lastresult: ' + JSON.stringify(messages));
+    //console.log('lastresult: ' + JSON.stringify(messages));
     // if(this.lastresult){
     //   messages.push({
     //     role: "assistant",
@@ -203,13 +204,22 @@ export class ChatGPTBot {
   GPTCache: Map<string, Array<string>> = new Map();
   setGPTCache(name: string, content: string) {
     let cache = this.GPTCache.get(name) || [];
-    if (name && content) {
-      cache.push(content);
-      this.GPTCache.set(name, cache);
+    if (cache.length >= MAX_MESSAGE_COUT) {
+      this.clearGPTCache(name);
+      return "--------结束。"
+    } else if (name && content) {
+      if (UNLIMIT_USER.includes(name)) {
+        cache.push(content);
+        this.GPTCache.set(name, cache);
+      }
     }
+    return ''
   }
   getGPTCache(name: string) {
     return this.GPTCache.get(name) || []
+  }
+  clearGPTCache(name: string) {
+    this.GPTCache.delete(name);
   }
   // send question to ChatGPT with OpenAI API and get answer
   private async onChatGPT(text: string, name?: string): Promise<string> {
@@ -220,19 +230,20 @@ export class ChatGPTBot {
         ...this.chatgptModelConfig,
         messages: inputMessages,
       });
+      let stop = "";
       // use OpenAI API to get ChatGPT reply message
       // this.lastresult = response?.data?.choices[0]?.message?.content;
       try {
-        console.log("new result: " + name + "||" + JSON.stringify(response?.data));
+       // console.log("new result: " + name + "||" + JSON.stringify(response?.data));
         if (name) {
-          this.setGPTCache(name, response?.data?.choices[0]?.message?.content);
+          stop = this.setGPTCache(name, response?.data?.choices[0]?.message?.content);
         }
       } catch (error) {
         console.error(error);
       }
       const chatgptReplyMessage = response?.data?.choices[0]?.message?.content?.trim();
       console.log(`🤖️ ChatGPT says: ${chatgptReplyMessage}`);
-      return chatgptReplyMessage;
+      return chatgptReplyMessage + stop;
     } catch (e: any) {
       console.error(`❌ ${e}`);
       const errorResponse = e?.response;
@@ -257,7 +268,7 @@ export class ChatGPTBot {
   ): Promise<void> {
     const messages: Array<string> = [];
     let message = mesasge;
-    console.log(message);
+    // console.log(message);
     while (message.length > this.SINGLE_MESSAGE_MAX_SIZE) {
       messages.push(message.slice(0, this.SINGLE_MESSAGE_MAX_SIZE));
       message = message.slice(this.SINGLE_MESSAGE_MAX_SIZE);
@@ -270,7 +281,7 @@ export class ChatGPTBot {
 
   // reply to private message
   private async onPrivateMessage(talker: ContactInterface, text: string) {
-    console.log("name: " + talker.name());
+    // console.log("name: " + talker.name());
     // get reply from ChatGPT
     const chatgptReplyMessage = await this.onChatGPT(text, talker.name());
     // send the ChatGPT reply to chat
