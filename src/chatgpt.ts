@@ -172,8 +172,10 @@ export class ChatGPTBot {
         content: this.chatgptSystemContent,
       }
     ];
+    console.log("createMessages:"+name)
     if (name) {
       let cache = this.getGPTCache(name);
+      console.log(JSON.stringify(cache));
       if (cache.length) {
         cache.forEach(data => {
           messages.push({
@@ -189,7 +191,7 @@ export class ChatGPTBot {
         role: "user",
         content: text,
       })
-    console.log('lastresult: ' + this.lastresult);
+    console.log('lastresult: ' + JSON.stringify(messages));
     // if(this.lastresult){
     //   messages.push({
     //     role: "assistant",
@@ -221,7 +223,7 @@ export class ChatGPTBot {
       // use OpenAI API to get ChatGPT reply message
       // this.lastresult = response?.data?.choices[0]?.message?.content;
       try {
-        console.log("new result: " + JSON.stringify(response?.data));
+        console.log("new result: " + name + "||" + JSON.stringify(response?.data));
         if (name) {
           this.setGPTCache(name, response?.data?.choices[0]?.message?.content);
         }
