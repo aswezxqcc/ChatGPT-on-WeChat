@@ -174,12 +174,14 @@ export class ChatGPTBot {
       {
         role: "user",
         content: text,
-      },
-      {
-        role: "assistant",
-        content: this.lastresult
       }
     ];
+    if(this.lastresult){
+      messages.push({
+        role: "assistant",
+        content: this.lastresult
+      })
+    }
     return messages;
   }
 
