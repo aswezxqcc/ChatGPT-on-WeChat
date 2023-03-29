@@ -176,6 +176,7 @@ export class ChatGPTBot {
         content: text,
       }
     ];
+    console.log('lastresult: '+this.lastresult);
     if(this.lastresult){
       messages.push({
         role: "assistant",
@@ -196,8 +197,8 @@ export class ChatGPTBot {
       });
       // use OpenAI API to get ChatGPT reply message
       this.lastresult = response?.data?.choices[0]?.message?.content;
-      const chatgptReplyMessage =
-        response?.data?.choices[0]?.message?.content?.trim();
+      console.log("new result: "+this.lastresult);
+      const chatgptReplyMessage = this.lastresult?.trim() as string;
       console.log(`🤖️ ChatGPT says: ${chatgptReplyMessage}`);
       return chatgptReplyMessage;
     } catch (e: any) {
