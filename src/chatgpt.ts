@@ -53,7 +53,7 @@ export class ChatGPTBot {
 
   // message size for a single reply by the bot
   SINGLE_MESSAGE_MAX_SIZE: number = 500;
-  lastresult?:string;
+  lastresult?: string;
   // OpenAI API
   private openaiAccountConfig: any; // OpenAI API key (required) and organization key (optional)
   private openaiApiInstance: any; // OpenAI API instance
@@ -175,6 +175,10 @@ export class ChatGPTBot {
         role: "user",
         content: text,
       },
+      {
+        role: "assistant",
+        content: this.lastresult
+      }
     ];
     return messages;
   }
@@ -186,7 +190,6 @@ export class ChatGPTBot {
       // config OpenAI API request body
       const response = await this.openaiApiInstance.createChatCompletion({
         ...this.chatgptModelConfig,
-        content:this.lastresult,
         messages: inputMessages,
       });
       // use OpenAI API to get ChatGPT reply message
@@ -232,7 +235,7 @@ export class ChatGPTBot {
 
   // reply to private message
   private async onPrivateMessage(talker: ContactInterface, text: string) {
-    console.log("name: "+talker.name());
+    console.log("name: " + talker.name());
     // get reply from ChatGPT
     const chatgptReplyMessage = await this.onChatGPT(text);
     // send the ChatGPT reply to chat
