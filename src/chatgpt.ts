@@ -224,6 +224,11 @@ export class ChatGPTBot {
   // send question to ChatGPT with OpenAI API and get answer
   private async onChatGPT(text: string, name?: string): Promise<string> {
     const inputMessages = this.createMessages(text, name);
+    if (text && name) {
+      if (text == "退出") {
+        return "离开了~"
+      }
+    }
     try {
       // config OpenAI API request body
       const response = await this.openaiApiInstance.createChatCompletion({
@@ -234,7 +239,7 @@ export class ChatGPTBot {
       // use OpenAI API to get ChatGPT reply message
       // this.lastresult = response?.data?.choices[0]?.message?.content;
       try {
-       // console.log("new result: " + name + "||" + JSON.stringify(response?.data));
+        // console.log("new result: " + name + "||" + JSON.stringify(response?.data));
         if (name) {
           stop = this.setGPTCache(name, response?.data?.choices[0]?.message?.content);
         }
