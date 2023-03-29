@@ -176,7 +176,7 @@ export class ChatGPTBot {
         content: text,
       }
     ];
-    console.log('lastresult: '+this.lastresult);
+    console.log('lastresult: ' + this.lastresult);
     // if(this.lastresult){
     //   messages.push({
     //     role: "assistant",
@@ -196,9 +196,13 @@ export class ChatGPTBot {
         messages: inputMessages,
       });
       // use OpenAI API to get ChatGPT reply message
-      this.lastresult = response?.data?.choices[0]?.message?.content;
-      console.log("new result: "+this.lastresult);
-      const chatgptReplyMessage = this.lastresult?.trim() as string;
+      // this.lastresult = response?.data?.choices[0]?.message?.content;
+      try {
+        console.log("new result: " + JSON.stringify(response?.data));
+      } catch (error) {
+        console.error(error);
+      }
+      const chatgptReplyMessage = response?.data?.choices[0]?.message?.content?.trim();
       console.log(`🤖️ ChatGPT says: ${chatgptReplyMessage}`);
       return chatgptReplyMessage;
     } catch (e: any) {
