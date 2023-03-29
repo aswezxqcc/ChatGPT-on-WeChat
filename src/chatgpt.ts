@@ -226,6 +226,7 @@ export class ChatGPTBot {
     const inputMessages = this.createMessages(text, name);
     if (text && name) {
       if (text == "退出") {
+        this.clearGPTCache(name);
         return "离开了~"
       }
     }
