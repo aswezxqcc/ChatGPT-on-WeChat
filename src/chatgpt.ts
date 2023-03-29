@@ -3,7 +3,7 @@ import { Message } from "wechaty";
 import { ContactInterface, RoomInterface } from "wechaty/impls";
 import { Configuration, OpenAIApi } from "openai";
 const MAX_MESSAGE_COUT = 50; //连续对话
-const UNLIMIT_USER = ["CC"]
+const UNLIMIT_USER = ["CC","lzh"]
 enum MessageType {
   Unknown = 0,
   Attachment = 1, // Attach(6),
@@ -298,8 +298,8 @@ export class ChatGPTBot {
   private async onGroupMessage(room: RoomInterface, text: string,talker: ContactInterface) {
     // get reply from ChatGPT
     console.log(room.payload?.id);
-    console.log(talker.name);
-    const chatgptReplyMessage = await this.onChatGPT(text);
+    console.log(talker.name());
+    const chatgptReplyMessage = await this.onChatGPT(text,talker.name());
     // the whole reply consist of: original text and bot reply
     const wholeReplyMessage = `${text}\n----------\n${chatgptReplyMessage}`;
     await this.reply(room, wholeReplyMessage);
