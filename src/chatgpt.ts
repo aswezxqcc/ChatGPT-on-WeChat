@@ -192,7 +192,7 @@ export class ChatGPTBot {
         role: "user",
         content: text,
       })
-    //console.log('lastresult: ' + JSON.stringify(messages));
+    console.log('all: ' + JSON.stringify(messages));
     // if(this.lastresult){
     //   messages.push({
     //     role: "assistant",
@@ -223,6 +223,7 @@ export class ChatGPTBot {
   }
   // send question to ChatGPT with OpenAI API and get answer
   private async onChatGPT(text: string, name?: string): Promise<string> {
+    console.log(text,name);
     const inputMessages = this.createMessages(text, name);
     if (text && name) {
       if (text == "退出") {
