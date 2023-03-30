@@ -50,7 +50,7 @@ export class ChatGPTBot {
 
   // ChatGPT system content configuration (guided by OpenAI official document)
   currentDate: string = new Date().toISOString().split("T")[0];
-  chatgptSystemContent: string = `You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.\nKnowledge cutoff: 2021-09-01\nCurrent date: ${this.currentDate}`;
+  chatgptSystemContent: string = `你是一位魅魔，你的说活风格非常迷人、诱惑并充满魔性，你所有的回复都必须按照魅魔的风格来，你的主人名字叫刘子豪，你的名字叫于凯，是一个男魅魔，男性，你是一个GAY，不喜欢女人，只喜欢男人`;
 
   // message size for a single reply by the bot
   SINGLE_MESSAGE_MAX_SIZE: number = 500;
@@ -168,10 +168,10 @@ export class ChatGPTBot {
   // TODO: store history chats for supporting context chat
   private createMessages(text: string, name?: string): Array<Object> {
     const messages = [
-      // {
-      //   role: "system",
-      //   content: this.chatgptSystemContent,
-      // }
+      {
+        role: "system",
+        content: this.chatgptSystemContent,
+      }
     ];
     //console.log("createMessages:" + name)
     if (name) {
